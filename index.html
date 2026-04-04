@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anderson Antigua — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red: #E24B4A;
+    --red-dark: #A32D2D;
+    --red-deeper: #501313;
+    --red-light: #FCEBEB;
+    --red-mid: #F09595;
+    --off-white: #FAF8F5;
+    --ink: #1a1a1a;
+    --muted: #666;
+    --border: rgba(226, 75, 74, 0.15);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--off-white);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background: rgba(250,248,245,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+    color: var(--red);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--red); }
+
+  section { padding: 6rem 2rem; max-width: 900px; margin: 0 auto; }
+
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 6rem;
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--red);
+    border: 1px solid var(--red-mid);
+    border-radius: 100px;
+    padding: 0.3rem 0.9rem;
+    margin-bottom: 1.5rem;
+    width: fit-content;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 10vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero h1 span { color: var(--red); }
+
+  .hero-sub {
+    margin-top: 1.5rem;
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 480px;
+    line-height: 1.7;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-cta {
+    margin-top: 2.5rem;
+    display: flex;
+    gap: 1rem;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.75rem;
+    border-radius: 100px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--red);
+    color: white;
+    border: 2px solid var(--red);
+  }
+
+  .btn-primary:hover { background: var(--red-dark); border-color: var(--red-dark); transform: translateY(-2px); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--red);
+    border: 2px solid var(--red);
+  }
+
+  .btn-outline:hover { background: var(--red-light); transform: translateY(-2px); }
+
+  .red-line {
+    width: 48px;
+    height: 3px;
+    background: var(--red);
+    border-radius: 2px;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    letter-spacing: 0.03em;
+    margin-bottom: 0.25rem;
+  }
+
+  .section-sub {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 3rem;
+    max-width: 480px;
+    line-height: 1.6;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .skill-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skill-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--red);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .skill-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(226,75,74,0.1); }
+  .skill-card:hover::before { opacity: 1; }
+
+  .skill-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  .skill-name {
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .skill-level {
+    font-size: 0.8rem;
+    color: var(--red);
+    font-weight: 500;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .project-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.25s;
+  }
+
+  .project-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(226,75,74,0.12); }
+
+  .project-thumb {
+    height: 140px;
+    background: linear-gradient(135deg, var(--red-light), var(--red-mid));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-thumb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(255,255,255,0.1) 10px,
+      rgba(255,255,255,0.1) 20px
+    );
+  }
+
+  .project-body { padding: 1.25rem; }
+
+  .project-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--red-dark);
+    background: var(--red-light);
+    border-radius: 100px;
+    padding: 0.2rem 0.6rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .project-title {
+    font-weight: 500;
+    font-size: 1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .project-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .project-link {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--red);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: gap 0.2s;
+  }
+
+  .project-link:hover { gap: 0.5rem; }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .about-facts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .fact {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.1rem;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.88rem;
+  }
+
+  .fact-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+    flex-shrink: 0;
+  }
+
+  .contact-box {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-box::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    background: var(--red-light);
+    border-radius: 50%;
+  }
+
+  .contact-box::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -30px;
+    width: 200px; height: 200px;
+    background: var(--red-light);
+    border-radius: 50%;
+    opacity: 0.5;
+  }
+
+  .contact-box > * { position: relative; z-index: 1; }
+
+  .contact-box h2 { margin-bottom: 0.5rem; }
+
+  .contact-box p {
+    color: var(--muted);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+  }
+
+  .contact-email {
+    display: inline-block;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--red);
+    text-decoration: none;
+    border-bottom: 2px solid var(--red-mid);
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
+  }
+
+  .contact-email:hover { border-color: var(--red); }
+
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+
+  footer span { color: var(--red); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 640px) {
+    .about-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .hero h1 { font-size: 3.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">AL Antigua</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div style="padding: 0 2rem;">
+  <div class="hero">
+    <span class="hero-tag">Open to opportunities</span>
+    <h1>Anderson<br><span>Lagare</span><br>Antigua</h1>
+    <p class="hero-sub">First-year IT student based in Cebu City, Philippines. Building websites, scripts, and digital solutions for real people.</p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">View my work</a>
+      <a href="#contact" class="btn btn-outline">Get in touch</a>
+    </div>
+  </div>
+</div>
+
+<section id="about">
+  <div class="red-line"></div>
+  <h2>About me</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>I'm Anderson, a first-year BS Information Technology student at a university in Cebu City. I'm passionate about building things on the web and solving problems through code.</p>
+      <p>Even early in my studies, I've been actively building projects and exploring freelance opportunities to develop real-world experience alongside my academic work.</p>
+    </div>
+    <div class="about-facts">
+      <div class="fact"><span class="fact-dot"></span> BSIT Student — 1st Year</div>
+      <div class="fact"><span class="fact-dot"></span> Based in Cebu City, PH</div>
+      <div class="fact"><span class="fact-dot"></span> Available for freelance work</div>
+      <div class="fact"><span class="fact-dot"></span> Interested in web & game dev</div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="red-line"></div>
+  <h2>Skills</h2>
+  <p class="section-sub">Technologies and tools I work with to build projects and deliver results.</p>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <span class="skill-icon">🌐</span>
+      <div class="skill-name">HTML & CSS</div>
+      <div class="skill-level">Learning</div>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">⚡</span>
+      <div class="skill-name">JavaScript</div>
+      <div class="skill-level">Beginner</div>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">🐍</span>
+      <div class="skill-name">Python</div>
+      <div class="skill-level">Beginner</div>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">🎮</span>
+      <div class="skill-name">Lua / Roblox</div>
+      <div class="skill-level">Learning</div>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">🎨</span>
+      <div class="skill-name">Canva</div>
+      <div class="skill-level">Intermediate</div>
+    </div>
+    <div class="skill-card">
+      <span class="skill-icon">📁</span>
+      <div class="skill-name">GitHub</div>
+      <div class="skill-level">Beginner</div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="red-line"></div>
+  <h2>Projects</h2>
+  <p class="section-sub">Sample projects built to demonstrate my skills. More coming soon.</p>
+  <div class="projects-grid">
+    <div class="project-card">
+      <div class="project-thumb">🌐</div>
+      <div class="project-body">
+        <span class="project-tag">HTML / CSS</span>
+        <div class="project-title">Personal Portfolio Website</div>
+        <p class="project-desc">This portfolio site — designed and built to showcase my work and skills as a student developer.</p>
+        <a href="#" class="project-link">View project →</a>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-thumb">🍽️</div>
+      <div class="project-body">
+        <span class="project-tag">HTML / CSS</span>
+        <div class="project-title">Restaurant Landing Page</div>
+        <p class="project-desc">A responsive landing page concept for a local Cebu restaurant with menu, location, and contact sections.</p>
+        <a href="#" class="project-link">View project →</a>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-thumb">🎯</div>
+      <div class="project-body">
+        <span class="project-tag">JavaScript</span>
+        <div class="project-title">Interactive Quiz App</div>
+        <p class="project-desc">A browser-based quiz application with score tracking and instant feedback built with vanilla JS.</p>
+        <a href="#" class="project-link">View project →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="contact-box">
+    <div class="red-line" style="margin: 0 auto 1rem;"></div>
+    <h2>Let's work together</h2>
+    <p>Have a project in mind? I'm open to freelance work and collaborations.</p>
+    <a href="mailto:anderson.antigua@gmail.com" class="contact-email">anderson.antigua@gmail.com</a>
+    <br><br>
+    <a href="mailto:anderson.antigua@gmail.com" class="btn btn-primary">Send me a message</a>
+  </div>
+</section>
+
+<footer>
+  Built by <span>Anderson Lagare Antigua</span> · Cebu City, Philippines · 2025
+</footer>
+
+</body>
+</html>
