@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Science & Tech Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0E1A;
+  --bg2:#0F1424;
+  --bg3:#151B2E;
+  --blue:#4F8EF7;
+  --blue-dim:rgba(79,142,247,0.15);
+  --green:#3ECFA0;
+  --red:#F7614F;
+  --text:#E8EEF8;
+  --muted:rgba(232,238,248,0.5);
+  --dim:rgba(232,238,248,0.2);
+  --border:rgba(79,142,247,0.15);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem}
+
+.container{width:100%;max-width:720px}
+
+.start-screen{text-align:center;animation:fadeUp 0.6s ease both}
+.start-badge{display:inline-flex;align-items:center;gap:0.5rem;font-family:'Space Mono',monospace;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--blue);border:1px solid var(--border);border-radius:100px;padding:0.4rem 1rem;margin-bottom:2rem}
+.start-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--blue);animation:blink 1.5s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.start-screen h1{font-size:clamp(2.5rem,7vw,4.5rem);font-weight:600;line-height:1;margin-bottom:1rem}
+.start-screen h1 span{color:var(--blue)}
+.start-screen p{font-size:0.9rem;color:var(--muted);line-height:1.8;max-width:440px;margin:0 auto 3rem}
+.start-stats{display:flex;justify-content:center;gap:2rem;margin-bottom:3rem}
+.sstat{text-align:center;padding:1.25rem 2rem;background:var(--bg3);border:1px solid var(--border);border-radius:12px}
+.sstat-num{font-family:'Space Mono',monospace;font-size:1.5rem;color:var(--blue);font-weight:700}
+.sstat-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:0.25rem}
+.btn-start{display:inline-block;padding:1rem 3rem;background:var(--blue);color:var(--bg);font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600;letter-spacing:0.05em;border:none;border-radius:8px;cursor:pointer;transition:all 0.2s}
+.btn-start:hover{transform:translateY(-2px);filter:brightness(1.1)}
+
+.quiz-screen{display:none;animation:fadeUp 0.4s ease both}
+.quiz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem}
+.q-counter{font-family:'Space Mono',monospace;font-size:0.8rem;color:var(--muted)}
+.q-counter span{color:var(--text);font-weight:700}
+.score-badge{font-family:'Space Mono',monospace;font-size:0.8rem;color:var(--green);background:rgba(62,207,160,0.1);border:1px solid rgba(62,207,160,0.2);border-radius:100px;padding:0.3rem 0.9rem}
+
+.progress-bar{height:3px;background:var(--bg3);border-radius:2px;margin-bottom:2.5rem;overflow:hidden}
+.progress-fill{height:100%;background:var(--blue);border-radius:2px;transition:width 0.4s ease}
+
+.timer-row{display:flex;justify-content:flex-end;margin-bottom:1.5rem}
+.timer{font-family:'Space Mono',monospace;font-size:0.85rem;color:var(--muted);display:flex;align-items:center;gap:0.5rem}
+.timer-circle{width:32px;height:32px;border-radius:50%;border:2px solid var(--blue);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:var(--blue);transition:border-color 0.3s,color 0.3s}
+.timer-circle.urgent{border-color:var(--red);color:var(--red)}
+
+.question-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:1.5rem}
+.q-category{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--blue);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+.q-category::before{content:'';width:20px;height:1px;background:var(--blue)}
+.q-text{font-size:1.1rem;font-weight:500;line-height:1.6;color:var(--text)}
+
+.options{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.5rem}
+.option{padding:1rem 1.25rem;background:var(--bg3);border:1px solid var(--border);border-radius:10px;font-size:0.88rem;color:var(--text);cursor:pointer;transition:all 0.2s;text-align:left;display:flex;align-items:center;gap:0.75rem}
+.option:hover:not(:disabled){background:var(--blue-dim);border-color:var(--blue);transform:translateY(-1px)}
+.option.correct{background:rgba(62,207,160,0.1);border-color:var(--green);color:var(--green)}
+.option.wrong{background:rgba(247,97,79,0.1);border-color:var(--red);color:var(--red)}
+.option:disabled{cursor:default}
+.opt-letter{font-family:'Space Mono',monospace;font-size:0.7rem;width:22px;height:22px;border-radius:50%;border:1px solid var(--dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
+.option.correct .opt-letter{border-color:var(--green);background:rgba(62,207,160,0.2)}
+.option.wrong .opt-letter{border-color:var(--red);background:rgba(247,97,79,0.2)}
+
+.feedback{min-height:48px;font-size:0.82rem;color:var(--muted);line-height:1.7;padding:0.75rem 1rem;background:var(--bg3);border-radius:8px;border-left:3px solid var(--dim);margin-bottom:1.5rem;display:none}
+.feedback.show{display:block}
+.feedback.correct-fb{border-color:var(--green);color:rgba(62,207,160,0.9)}
+.feedback.wrong-fb{border-color:var(--red)}
+
+.btn-next{width:100%;padding:0.9rem;background:var(--blue);color:var(--bg);font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600;border:none;border-radius:8px;cursor:pointer;transition:all 0.2s;display:none}
+.btn-next.show{display:block}
+.btn-next:hover{filter:brightness(1.1)}
+
+.results-screen{display:none;text-align:center;animation:fadeUp 0.5s ease both}
+.result-circle{width:140px;height:140px;border-radius:50%;border:3px solid var(--blue);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 2rem;position:relative}
+.result-circle::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid var(--border)}
+.result-score{font-family:'Space Mono',monospace;font-size:2.5rem;font-weight:700;color:var(--blue);line-height:1}
+.result-total{font-size:0.75rem;color:var(--muted);margin-top:0.25rem}
+.results-screen h2{font-size:2rem;font-weight:600;margin-bottom:0.75rem}
+.results-screen p{color:var(--muted);font-size:0.9rem;margin-bottom:2.5rem;line-height:1.7}
+.result-breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2.5rem}
+.rb-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1.25rem}
+.rb-num{font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:700;margin-bottom:0.25rem}
+.rb-label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em}
+.btn-restart{padding:1rem 3rem;background:var(--blue);color:var(--bg);font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600;border:none;border-radius:8px;cursor:pointer;transition:all 0.2s}
+.btn-restart:hover{filter:brightness(1.1);transform:translateY(-2px)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:540px){
+  .options{grid-template-columns:1fr}
+  .start-stats{gap:1rem}
+  .sstat{padding:1rem}
+  .result-breakdown{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="start-screen" id="startScreen">
+  <div class="start-badge">Quiz Mode Active</div>
+  <h1>Science &<br><span>Technology</span></h1>
+  <p>Test your knowledge across physics, biology, space, computers, and modern technology. 15 questions. Can you ace it?</p>
+  <div class="start-stats">
+    <div class="sstat"><div class="sstat-num">15</div><div class="sstat-label">Questions</div></div>
+    <div class="sstat"><div class="sstat-num">20s</div><div class="sstat-label">Per question</div></div>
+    <div class="sstat"><div class="sstat-num">4</div><div class="sstat-label">Choices</div></div>
+  </div>
+  <button class="btn-start" onclick="startQuiz()">Start Quiz</button>
+</div>
+
+<div class="quiz-screen" id="quizScreen">
+  <div class="quiz-header">
+    <div class="q-counter">Question <span id="qNum">1</span> of 15</div>
+    <div class="score-badge">Score: <span id="scoreDisplay">0</span></div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="timer-row">
+    <div class="timer">
+      <div class="timer-circle" id="timerCircle">20</div>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="q-category" id="qCategory">Physics</div>
+    <div class="q-text" id="qText"></div>
+  </div>
+  <div class="options" id="optionsGrid"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="btn-next" id="btnNext" onclick="nextQuestion()">Next question →</button>
+</div>
+
+<div class="results-screen" id="resultsScreen">
+  <div class="result-circle">
+    <div class="result-score" id="finalScore">0</div>
+    <div class="result-total">out of 15</div>
+  </div>
+  <h2 id="resultTitle">Well done!</h2>
+  <p id="resultMsg">Here's how you performed across all 15 questions.</p>
+  <div class="result-breakdown">
+    <div class="rb-card"><div class="rb-num" id="rbCorrect" style="color:var(--green)">0</div><div class="rb-label">Correct</div></div>
+    <div class="rb-card"><div class="rb-num" id="rbWrong" style="color:var(--red)">0</div><div class="rb-label">Wrong</div></div>
+    <div class="rb-card"><div class="rb-num" id="rbPct" style="color:var(--blue)">0%</div><div class="rb-label">Score</div></div>
+  </div>
+  <button class="btn-restart" onclick="restartQuiz()">Try again</button>
+</div>
+
+</div>
+<script>
+const questions=[
+  {cat:"Physics",q:"What is the speed of light in a vacuum?",opts:["300,000 km/s","150,000 km/s","450,000 km/s","1,000,000 km/s"],ans:0,fact:"Light travels at exactly 299,792,458 meters per second in a vacuum."},
+  {cat:"Space",q:"Which planet has the most moons in our solar system?",opts:["Jupiter","Saturn","Uranus","Neptune"],ans:1,fact:"Saturn has 146 confirmed moons, surpassing Jupiter's 95."},
+  {cat:"Biology",q:"What is the powerhouse of the cell?",opts:["Nucleus","Ribosome","Mitochondria","Golgi apparatus"],ans:2,fact:"Mitochondria produce ATP through cellular respiration, powering the cell."},
+  {cat:"Computers",q:"What does CPU stand for?",opts:["Central Processing Unit","Computer Power Unit","Central Program Utility","Core Processing Unit"],ans:0,fact:"The CPU is the brain of a computer, executing instructions from programs."},
+  {cat:"Chemistry",q:"What is the chemical symbol for gold?",opts:["Go","Gd","Au","Ag"],ans:2,fact:"Au comes from the Latin word 'aurum', meaning gold."},
+  {cat:"Space",q:"How long does light from the Sun take to reach Earth?",opts:["About 8 minutes","About 1 minute","About 1 hour","About 30 seconds"],ans:0,fact:"Sunlight takes approximately 8 minutes and 20 seconds to reach Earth."},
+  {cat:"Technology",q:"What does HTML stand for?",opts:["Hyper Text Markup Language","High Tech Modern Language","Hyper Transfer Markup Logic","Home Tool Markup Language"],ans:0,fact:"HTML is the standard language for creating web pages, first proposed by Tim Berners-Lee."},
+  {cat:"Biology",q:"How many chromosomes do humans normally have?",opts:["23","44","46","48"],ans:2,fact:"Humans have 46 chromosomes arranged in 23 pairs in most cells."},
+  {cat:"Physics",q:"What is the SI unit of electric current?",opts:["Volt","Watt","Ohm","Ampere"],ans:3,fact:"The ampere (A) is named after French physicist André-Marie Ampère."},
+  {cat:"Technology",q:"Which company created the Python programming language?",opts:["Microsoft","Google","Guido van Rossum (independent)","Apple"],ans:2,fact:"Python was created by Guido van Rossum and first released in 1991."},
+  {cat:"Chemistry",q:"What is the most abundant gas in Earth's atmosphere?",opts:["Oxygen","Carbon dioxide","Nitrogen","Argon"],ans:2,fact:"Nitrogen makes up about 78% of Earth's atmosphere."},
+  {cat:"Space",q:"What is the largest planet in our solar system?",opts:["Saturn","Neptune","Uranus","Jupiter"],ans:3,fact:"Jupiter is so large that all other planets in the solar system could fit inside it."},
+  {cat:"Technology",q:"What does 'AI' stand for in computing?",opts:["Automated Intelligence","Artificial Intelligence","Advanced Integration","Automated Interface"],ans:1,fact:"Artificial Intelligence refers to machines simulating human-like thinking and learning."},
+  {cat:"Biology",q:"What organ produces insulin in the human body?",opts:["Liver","Kidneys","Pancreas","Stomach"],ans:2,fact:"The pancreas produces insulin to regulate blood sugar levels."},
+  {cat:"Physics",q:"What is the atomic number of hydrogen?",opts:["2","1","3","4"],ans:1,fact:"Hydrogen has 1 proton, making it the lightest and most abundant element in the universe."},
+];
+
+let current=0,score=0,wrong=0,timer,timeLeft=20,answered=false;
+
+function startQuiz(){
+  document.getElementById('startScreen').style.display='none';
+  document.getElementById('quizScreen').style.display='block';
+  loadQuestion();
+}
+
+function loadQuestion(){
+  answered=false;
+  timeLeft=20;
+  const q=questions[current];
+  document.getElementById('qNum').textContent=current+1;
+  document.getElementById('scoreDisplay').textContent=score;
+  document.getElementById('progressFill').style.width=((current/15)*100)+'%';
+  document.getElementById('qCategory').textContent=q.cat;
+  document.getElementById('qText').textContent=q.q;
+  const fb=document.getElementById('feedback');
+  fb.className='feedback';fb.textContent='';
+  document.getElementById('btnNext').className='btn-next';
+  const grid=document.getElementById('optionsGrid');
+  grid.innerHTML='';
+  const letters=['A','B','C','D'];
+  q.opts.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='option';
+    btn.innerHTML=`<span class="opt-letter">${letters[i]}</span>${opt}`;
+    btn.onclick=()=>selectAnswer(i,btn);
+    grid.appendChild(btn);
+  });
+  startTimer();
+}
+
+function startTimer(){
+  clearInterval(timer);
+  const circle=document.getElementById('timerCircle');
+  circle.textContent=timeLeft;
+  circle.className='timer-circle';
+  timer=setInterval(()=>{
+    timeLeft--;
+    circle.textContent=timeLeft;
+    if(timeLeft<=5)circle.className='timer-circle urgent';
+    if(timeLeft<=0){clearInterval(timer);timeExpired();}
+  },1000);
+}
+
+function timeExpired(){
+  if(answered)return;
+  answered=true;
+  wrong++;
+  const q=questions[current];
+  const btns=document.querySelectorAll('.option');
+  btns.forEach(b=>b.disabled=true);
+  btns[q.ans].classList.add('correct');
+  showFeedback(false,q.fact);
+  document.getElementById('btnNext').className='btn-next show';
+}
+
+function selectAnswer(i,btn){
+  if(answered)return;
+  answered=true;
+  clearInterval(timer);
+  const q=questions[current];
+  const btns=document.querySelectorAll('.option');
+  btns.forEach(b=>b.disabled=true);
+  if(i===q.ans){score++;btn.classList.add('correct');showFeedback(true,q.fact);}
+  else{wrong++;btn.classList.add('wrong');btns[q.ans].classList.add('correct');showFeedback(false,q.fact);}
+  document.getElementById('scoreDisplay').textContent=score;
+  document.getElementById('btnNext').className='btn-next show';
+}
+
+function showFeedback(correct,fact){
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'correct-fb':'wrong-fb');
+  fb.textContent=(correct?'Correct! ':'Incorrect. ')+fact;
+}
+
+function nextQuestion(){
+  current++;
+  if(current>=15){showResults();return;}
+  loadQuestion();
+}
+
+function showResults(){
+  clearInterval(timer);
+  document.getElementById('quizScreen').style.display='none';
+  const rs=document.getElementById('resultsScreen');
+  rs.style.display='block';
+  const pct=Math.round((score/15)*100);
+  document.getElementById('finalScore').textContent=score;
+  document.getElementById('rbCorrect').textContent=score;
+  document.getElementById('rbWrong').textContent=wrong;
+  document.getElementById('rbPct').textContent=pct+'%';
+  const titles=['Keep studying!','Not bad!','Good job!','Great work!','Outstanding!'];
+  const msgs=[
+    'Science can be tricky. Review the topics and try again!',
+    'You got the basics. Keep exploring science and tech!',
+    'Solid performance! A little more study and you\'ll ace it.',
+    'Impressive knowledge! You clearly love science.',
+    'Perfect or near-perfect! You\'re a science genius!'
+  ];
+  const idx=pct<40?0:pct<60?1:pct<75?2:pct<95?3:4;
+  document.getElementById('resultTitle').textContent=titles[idx];
+  document.getElementById('resultMsg').textContent=msgs[idx];
+}
+
+function restartQuiz(){
+  current=0;score=0;wrong=0;
+  document.getElementById('resultsScreen').style.display='none';
+  document.getElementById('quizScreen').style.display='block';
+  loadQuestion();
+}
+</script>
+</body>
+</html>
